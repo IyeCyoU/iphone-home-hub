@@ -1,20 +1,18 @@
-SHAKIR HOME HUB v8 — ATHAN TEST EDITION
+SHAKIR HOME HUB v9 — ATHAN INITIALIZATION FIX
 
-New:
-- TOOLS option 6 = Test Athan Now.
+Fix:
+The previous test could say "Athan audio is not ready" because the JavaScript initialized
+the audio player before the HTML audio elements had finished loading.
 
-How to test on iPhone 5s:
-1. Replace your existing GitHub Pages index.html with this index.html.
-2. Commit the update and refresh the Home Hub.
-3. Turn the iPhone media volume up.
-4. Open TOOLS.
-5. Select 4 = Enable Athan.
-6. Open TOOLS again.
-7. Select 6 = Test Athan Now.
-8. A full-screen TEST ATHAN alert should appear and the Athan should play.
-9. Use STOP ATHAN to stop it.
+v9 initializes the audio after the page is fully loaded and also re-checks the player
+when Enable Athan or Test Athan is selected.
 
-Important:
-- Keep the Home Hub page open.
-- Keep Auto-Lock = Never for reliable scheduled playback.
-- iOS 12 may block autoplay unless you have interacted with the page first.
+TEST
+1. Replace the current GitHub index.html with this one.
+2. Commit and wait briefly for GitHub Pages to update.
+3. Refresh Home Hub on the iPhone 5s.
+4. Turn media volume up.
+5. TOOLS > 4 = Enable Athan.
+6. TOOLS > 6 = Test Athan Now.
+
+If Safari blocks the first autoplay attempt, tap Enable Athan once and then Test Athan again.
