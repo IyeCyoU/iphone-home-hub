@@ -1,17 +1,26 @@
-SHAKIR HOME HUB v5 — MOCK-UP MATCH EDITION
+SHAKIR HOME HUB v7 — FINAL ATHAN EDITION
 
-This version is rebuilt to visually follow the approved mock-up much more closely.
+Athan audio is already configured in index.html.
+You do NOT need to upload separate MP3 files.
 
-Key changes:
-- Large left-side clock panel with date beside it.
-- Separate top-right Doha weather panel.
-- Prominent mosque/prayer heading.
-- Large gold NEXT PRAYER panel with prayer name, time, and countdown.
-- Bigger individual prayer cards.
-- Gold highlight repeated on the actual next prayer card.
-- Four large bottom tiles: Internet, QAR→INR, AX55, Tools.
-- Hijri date displayed using the live prayer API response.
-- Existing live Doha weather, FX, prayer, and countdown logic retained.
+Normal prayers:
+- Mishary Rashid Alafasy — Kuwait Adhan
 
-DEPLOY
-Replace your existing GitHub Pages index.html with this file, commit, then refresh on the iPhone 5s.
+Fajr:
+- Fajr Adhan from Al-Haram Al-Makki
+
+SETUP
+1. Replace the current GitHub Pages index.html with this index.html.
+2. Commit the change.
+3. Wait briefly for GitHub Pages to update.
+4. On iPhone 5s: Settings > Display & Brightness > Auto-Lock > Never.
+5. Open Home Hub and turn media volume up.
+6. Open TOOLS and choose 4 = Enable Athan once.
+
+The Athan triggers at Fajr, Dhuhr, Asr, Maghrib and Isha.
+Sunrise does not trigger Athan.
+
+IMPORTANT
+iOS 12 Safari requires a user interaction before web audio can autoplay reliably.
+Keep the Home Hub page active and the phone unlocked. If Safari is closed,
+the phone locks, or iOS suspends the page, playback cannot be guaranteed.
