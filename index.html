@@ -306,7 +306,7 @@ function loadWeather(){
 }
 
 function tools(){
- var c=prompt("TOOLS\n1 = Calculator\n2 = QAR→INR\n3 = Timer\n4 = Enable Athan\n5 = Disable Athan\n\nEnter 1 to 5:");
+ var c=prompt("TOOLS\n1 = Calculator\n2 = QAR→INR\n3 = Timer\n4 = Enable Athan\n5 = Disable Athan\n6 = Test Athan Now\n\nEnter 1 to 6:");
  if(c==="1"){
    var x=prompt("Calculation:");
    if(x!==null){
@@ -330,6 +330,8 @@ function tools(){
    enableAthan();
  }else if(c==="5"){
    disableAthan();
+ }else if(c==="6"){
+   testAthan();
  }
 }
 
@@ -386,6 +388,31 @@ function stopAthan(){
 function dismissAthan(){
   document.getElementById("athanOverlay").className="athanOverlay";
 }
+function testAthan(){
+  if(!athanEnabled){
+    athanEnabled=true;
+    try{localStorage.setItem("athanEnabled","1")}catch(e){}
+  }
+  document.getElementById("athanPrayer").textContent="TEST ATHAN";
+  document.getElementById("athanOverlay").className="athanOverlay show";
+  var audio=athanAudio;
+  if(!audio){alert("Athan audio is not ready.");return;}
+  try{audio.currentTime=0}catch(e){}
+  try{
+    var p=audio.play();
+    if(p&&p.catch){
+      p.catch(function(){
+        alert("Safari blocked playback. First choose TOOLS > Enable Athan, then tap TEST ATHAN NOW again.");
+        dismissAthan();
+      });
+    }
+  }catch(e){
+    alert("Unable to start test Athan.");
+    dismissAthan();
+  }
+  audio.onended=function(){dismissAthan();}
+}
+
 function athanCheck(){
   if(!athanEnabled||!prayerData.Fajr)return;
   var d=dohaNow(),now=pad(d.getUTCHours())+":"+pad(d.getUTCMinutes());
