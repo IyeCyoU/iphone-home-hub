@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Home Hub">
+<title>Shakir Home Hub — Doha</title>
+<style>
+html,body{margin:0;width:100%;height:100%;background:#0b1017;color:#f4f7fb;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;overflow:hidden}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+main{height:100vh;padding:8px;display:flex;flex-direction:column;gap:7px}
+.panel,.card{background:#151c26;border:1px solid #303b4b;border-radius:13px}
+.top{height:24%;display:flex;align-items:center;justify-content:space-between;padding:9px 15px}
+#clock{font-size:43px;font-weight:700;letter-spacing:-2px} #ampm{font-size:13px;opacity:.58;letter-spacing:0}
+.right{text-align:right} #day{font-size:14px;font-weight:700;letter-spacing:1px} #date{font-size:11px;opacity:.58;margin-top:4px}
+.prayer{height:34%;padding:7px 10px}
+.ph{display:flex;justify-content:space-between;align-items:center;height:23px}
+.ptitle{font-size:10px;letter-spacing:1.1px;opacity:.62}
+#next{font-size:10px;font-weight:650}
+.times{height:calc(100% - 23px);display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+.p{background:#10161e;border-radius:8px;text-align:center;display:flex;flex-direction:column;justify-content:center}
+.p.next{outline:1px solid #9bb7d6;background:#1c2a39}
+.p .n{font-size:8px;opacity:.55;text-transform:uppercase}.p .t{font-size:14px;font-weight:700;margin-top:3px}
+.cards{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:7px;min-height:0}
+.card{padding:8px;display:flex;flex-direction:column;justify-content:center;min-width:0;text-decoration:none;color:#f4f7fb}
+.k{font-size:8px;text-transform:uppercase;letter-spacing:.9px;opacity:.52}.v{font-size:16px;font-weight:700;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.s{font-size:8px;opacity:.48;margin-top:3px;line-height:1.25}
+.ok{color:#a8e39d}.err{color:#ffcc75}
+button.card{font:inherit;text-align:left;cursor:pointer;color:#f4f7fb}
+footer{text-align:center;font-size:7px;opacity:.28;height:8px}
+@media(orientation:portrait){body{overflow:auto}main{height:auto;min-height:100vh}.top{height:145px}.prayer{height:auto}.times{grid-template-columns:repeat(3,1fr)}.p{height:62px}.cards{grid-template-columns:1fr 1fr;grid-auto-rows:95px}}
+</style>
+</head>
+<body>
+<main>
+<section class="panel top">
+ <div id="clock">--:-- <span id="ampm">--</span></div>
+ <div class="right"><div id="day">DOHA</div><div id="date">--</div></div>
+</section>
+
+<section class="panel prayer">
+ <div class="ph"><div class="ptitle">DOHA PRAYER TIMES</div><div id="next">Loading…</div></div>
+ <div class="times" id="prayers">
+  <div class="p" data-name="Fajr"><div class="n">Fajr</div><div class="t">--:--</div></div>
+  <div class="p" data-name="Sunrise"><div class="n">Sunrise</div><div class="t">--:--</div></div>
+  <div class="p" data-name="Dhuhr"><div class="n">Dhuhr</div><div class="t">--:--</div></div>
+  <div class="p" data-name="Asr"><div class="n">Asr</div><div class="t">--:--</div></div>
+  <div class="p" data-name="Maghrib"><div class="n">Maghrib</div><div class="t">--:--</div></div>
+  <div class="p" data-name="Isha"><div class="n">Isha</div><div class="t">--:--</div></div>
+ </div>
+</section>
+
+<section class="cards">
+ <div class="card"><div class="k">Internet</div><div id="net" class="v">Checking</div><div class="s">Connection</div></div>
+ <div class="card"><div class="k">QAR → INR</div><div id="fx" class="v">₹ —</div><div id="fxs" class="s">Loading reference rate</div></div>
+ <div class="card"><div class="k">Doha Weather</div><div id="weather" class="v">— °C</div><div id="weathers" class="s">Loading weather</div></div>
+ <a class="card" href="http://192.168.0.1"><div class="k">Network</div><div class="v">AX55</div><div class="s">Open router</div></a>
+ <button class="card" onclick="calculator()"><div class="k">Tools</div><div class="v">Calculator</div><div class="s">Quick calculation</div></button>
+ <button class="card" onclick="converter()"><div class="k">Tools</div><div class="v">FX Convert</div><div class="s">QAR → INR</div></button>
+ <button class="card" onclick="timerTool()"><div class="k">Tools</div><div class="v">Timer</div><div id="timerstatus" class="s">Quick timer</div></button>
+ <button class="card" onclick="refreshLive()"><div class="k">System</div><div class="v">Refresh</div><div id="updated" class="s">Live data</div></button>
+</section>
+<footer>SHAKIR HOME HUB • DOHA</footer>
+</main>
+
+<script>
+var prayerData={}, fxRate=null, timerHandle=null;
+function pad(n){return n<10?"0"+n:n}
+function dohaNow(){
+ var now=new Date();
+ // Qatar is UTC+3 year-round. Construct a Date whose UTC fields represent Doha wall time.
+ return new Date(now.getTime()+3*60*60*1000);
+}
+function tick(){
+ var d=dohaNow(), h=d.getUTCHours(),m=d.getUTCMinutes(),ap=h>=12?"PM":"AM",h12=h%12||12;
+ document.getElementById("clock").firstChild.nodeValue=h12+":"+pad(m)+" ";
+ document.getElementById("ampm").textContent=ap;
+ var days=["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"];
+ var mons=["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+ document.getElementById("day").textContent=days[d.getUTCDay()]+" • DOHA";
+ document.getElementById("date").textContent=pad(d.getUTCDate())+" "+mons[d.getUTCMonth()]+" "+d.getUTCFullYear();
+ updateNextPrayer();
+}
+function network(){
+ var e=document.getElementById("net");
+ if(navigator.onLine){e.textContent="● ONLINE";e.className="v ok"}else{e.textContent="● OFFLINE";e.className="v err"}
+}
+function xhrJSON(url,success,fail){
+ var x=new XMLHttpRequest(); x.open("GET",url,true); x.timeout=12000;
+ x.onreadystatechange=function(){if(x.readyState===4){if(x.status>=200&&x.status<300){try{success(JSON.parse(x.responseText))}catch(e){fail()}}else fail()}};
+ x.ontimeout=fail;x.onerror=fail;x.send();
+}
+function cleanTime(v){return (v||"").split(" ")[0].substring(0,5)}
+function loadPrayer(){
+ var d=dohaNow(), ds=pad(d.getUTCDate())+"-"+pad(d.getUTCMonth()+1)+"-"+d.getUTCFullYear();
+ // AlAdhan Qatar method ID 10.
+ var u="https://api.aladhan.com/v1/timingsByCity/"+ds+"?city=Doha&country=Qatar&method=10";
+ xhrJSON(u,function(j){
+  var t=j.data.timings,names=["Fajr","Sunrise","Dhuhr","Asr","Maghrib","Isha"];
+  for(var i=0;i<names.length;i++){prayerData[names[i]]=cleanTime(t[names[i]])}
+  var els=document.querySelectorAll(".p");
+  for(var k=0;k<els.length;k++){var n=els[k].getAttribute("data-name");els[k].querySelector(".t").textContent=prayerData[n]}
+  updateNextPrayer();
+ },function(){document.getElementById("next").textContent="Prayer data unavailable"});
+}
+function updateNextPrayer(){
+ if(!prayerData.Fajr)return;
+ var d=dohaNow(), nowMin=d.getUTCHours()*60+d.getUTCMinutes();
+ var order=["Fajr","Dhuhr","Asr","Maghrib","Isha"], nextName="Fajr",diff=null,tomorrow=false;
+ for(var i=0;i<order.length;i++){
+  var a=prayerData[order[i]].split(":"),mins=parseInt(a[0],10)*60+parseInt(a[1],10);
+  if(mins>nowMin){nextName=order[i];diff=mins-nowMin;break}
+ }
+ if(diff===null){var f=prayerData.Fajr.split(":");diff=(24*60-nowMin)+(parseInt(f[0],10)*60+parseInt(f[1],10));tomorrow=true}
+ var els=document.querySelectorAll(".p");for(var k=0;k<els.length;k++){els[k].className="p"+(els[k].getAttribute("data-name")===nextName?" next":"")}
+ var h=Math.floor(diff/60),m=diff%60;
+ document.getElementById("next").textContent="NEXT: "+nextName+" • "+(h?h+"h ":"")+m+"m";
+}
+function loadFX(){
+ xhrJSON("https://api.frankfurter.dev/v2/rate/QAR/INR",function(j){
+  var r=j.rate || j.amount || j.value;
+  if(!r && j.rates)r=j.rates.INR;
+  fxRate=parseFloat(r);
+  if(isNaN(fxRate))throw 0;
+  document.getElementById("fx").textContent="₹ "+fxRate.toFixed(2);
+  document.getElementById("fxs").textContent="1 QAR • reference rate";
+ },function(){document.getElementById("fxs").textContent="Rate unavailable"});
+}
+function weatherText(c){
+ if(c===0)return"Clear"; if(c<=3)return"Partly cloudy"; if(c<=48)return"Fog";
+ if(c<=67)return"Rain"; if(c<=77)return"Snow"; if(c<=82)return"Showers"; if(c<=99)return"Thunderstorm"; return"Weather";
+}
+function loadWeather(){
+ var u="https://api.open-meteo.com/v1/forecast?latitude=25.2854&longitude=51.5310&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=Asia%2FQatar&forecast_days=1";
+ xhrJSON(u,function(j){
+  document.getElementById("weather").textContent=Math.round(j.current.temperature_2m)+" °C";
+  document.getElementById("weathers").textContent=weatherText(j.current.weather_code)+" • "+Math.round(j.daily.temperature_2m_min[0])+"° / "+Math.round(j.daily.temperature_2m_max[0])+"°";
+ },function(){document.getElementById("weathers").textContent="Weather unavailable"});
+}
+function refreshLive(){loadPrayer();loadFX();loadWeather();document.getElementById("updated").textContent="Updated "+new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}
+function calculator(){var x=prompt("Calculation (example: 1250*3.64)");if(x!==null){try{if(!/^[0-9+\-*/(). %]+$/.test(x))throw 0;alert("Result: "+Function('"use strict";return ('+x+')')())}catch(e){alert("Invalid calculation")}}}
+function converter(){var q=prompt("QAR amount:");if(q!==null){q=parseFloat(q);if(!isNaN(q)&&fxRate)alert(q.toFixed(2)+" QAR = ₹ "+(q*fxRate).toFixed(2));else alert("Live FX rate is not available yet.")}}
+function timerTool(){var mins=parseInt(prompt("Timer minutes:"),10);if(!mins||mins<1)return;if(timerHandle)clearTimeout(timerHandle);document.getElementById("timerstatus").textContent=mins+" min running";timerHandle=setTimeout(function(){alert("Timer finished.");document.getElementById("timerstatus").textContent="Quick timer"},mins*60000)}
+tick();network();setInterval(tick,1000);window.addEventListener("online",network);window.addEventListener("offline",network);refreshLive();setInterval(refreshLive,30*60*1000);
+</script>
+</body></html>
