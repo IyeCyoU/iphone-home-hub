@@ -1,24 +1,17 @@
-SHAKIR HOME HUB v3 — DOHA LIVE BUILD
+SHAKIR HOME HUB v5 — MOCK-UP MATCH EDITION
 
-Live modules:
-• Doha clock/date (fixed UTC+3)
-• Doha prayer times using AlAdhan Qatar calculation method
-• Next-prayer countdown/highlight
-• Internet online/offline
-• QAR→INR reference exchange rate
-• Doha current weather + daily low/high
-• AX55 shortcut
-• Calculator, QAR→INR converter and timer
-• Live refresh every 30 minutes
+This version is rebuilt to visually follow the approved mock-up much more closely.
 
-NOTES
-1. AX55 link is currently http://192.168.0.1. Edit if your AX55 uses another address.
-2. Prayer times are calculated by an external prayer-time service using its Qatar method.
-   For religious observance, compare the displayed times with the timetable you normally follow.
-3. Weather uses Open-Meteo.
-4. FX is a reference/benchmark rate, not necessarily your bank/card/remittance rate.
-5. Internet is required for prayer/weather/FX updates. The clock continues locally.
+Key changes:
+- Large left-side clock panel with date beside it.
+- Separate top-right Doha weather panel.
+- Prominent mosque/prayer heading.
+- Large gold NEXT PRAYER panel with prayer name, time, and countdown.
+- Bigger individual prayer cards.
+- Gold highlight repeated on the actual next prayer card.
+- Four large bottom tiles: Internet, QAR→INR, AX55, Tools.
+- Hijri date displayed using the live prayer API response.
+- Existing live Doha weather, FX, prayer, and countdown logic retained.
 
-INSTALL
-Host index.html on an HTTPS-capable web host, open it in Safari on the iPhone 5s,
-then Share → Add to Home Screen. Landscape orientation is recommended.
+DEPLOY
+Replace your existing GitHub Pages index.html with this file, commit, then refresh on the iPhone 5s.
