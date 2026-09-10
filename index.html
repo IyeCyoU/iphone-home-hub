@@ -1,45 +1,330 @@
---:--
---
-THURSDAY
-10 SEP 2026
-DOHA
-☀
-Doha
-—°C
-Loading…
-H: —°
-L: —°
-🕌  DOHA PRAYER TIMES
-NEXT PRAYER
-LOADING
---:--
-Please wait
-FAJR
---:--
-SUNRISE
---:--
-DHUHR
---:--
-ASR
---:--
-MAGHRIB
---:--
-ISHA
---:--
-●
-INTERNET
-Checking
-Connected
-↔
-QAR → INR
-₹ —
-1 QAR • reference
-⌁
-NETWORK
-AX55
-Open Router
-▦
-UTILITIES
-TOOLS
-Calculator • FX • Timer
-SHAKIR HOME HUB • DOHA
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Home Hub">
+<title>Shakir Home Hub — Doha</title>
+<style>
+:root{
+  --bg:#04121f;
+  --panel:#082640;
+  --panel2:#0b2d4b;
+  --line:#0d5d91;
+  --text:#f5fbff;
+  --muted:#b7d6ea;
+  --gold:#ffd447;
+  --goldbg:#3b3006;
+  --green:#5ef07d;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);
+font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
+body{display:flex;align-items:center;justify-content:center}
+main{width:100vw;height:100vh;padding:7px;display:grid;grid-template-rows:27% 45% 24% 4%;gap:6px}
+
+.panel,.tile{
+  background:linear-gradient(180deg,var(--panel2),var(--panel));
+  border:1.4px solid var(--line);
+  border-radius:14px;
+  box-shadow:inset 0 0 18px rgba(39,139,202,.08);
+}
+
+.top{display:grid;grid-template-columns:1.75fr 1fr;gap:7px}
+.clockPanel{display:grid;grid-template-columns:1.15fr .85fr;align-items:center;padding:8px 14px}
+.timeWrap{display:flex;align-items:flex-end;gap:6px}
+#clock{font-size:53px;font-weight:900;letter-spacing:-3px;line-height:.92}
+#ampm{font-size:15px;font-weight:800;padding-bottom:5px;color:#d8e8f5}
+.dateWrap{border-left:1px solid #6a8da8;padding-left:13px}
+#day{font-size:16px;font-weight:900;letter-spacing:.7px}
+#date{font-size:13px;font-weight:800;margin-top:6px}
+#hijri{font-size:10px;font-weight:700;margin-top:4px;color:var(--muted)}
+
+.weatherPanel{display:grid;grid-template-columns:.5fr 1fr .65fr;align-items:center;padding:8px 10px}
+.sun{font-size:36px;text-align:center}
+.weatherMid{text-align:left}
+.city{font-size:11px;font-weight:900}
+#weather{font-size:29px;font-weight:900;line-height:1;margin-top:2px}
+#condition{font-size:10px;font-weight:800;color:var(--muted);margin-top:3px}
+#range{border-left:1px solid #6a8da8;padding-left:8px;font-size:12px;font-weight:900;line-height:1.8}
+
+.prayerPanel{padding:6px 8px;display:grid;grid-template-rows:40% 60%;gap:5px}
+.prayerHead{display:grid;grid-template-columns:1fr 1.65fr;gap:7px}
+.titleBox{display:flex;align-items:center;padding-left:10px;font-size:16px;font-weight:900;letter-spacing:.6px}
+.nextBox{
+  border:2px solid #dcae2b;border-radius:14px;background:linear-gradient(180deg,#443707,#2a2305);
+  display:grid;grid-template-columns:1.25fr .85fr;align-items:center;padding:6px 12px;
+  box-shadow:0 0 12px rgba(255,212,71,.18)
+}
+.nextLeft{padding-right:10px}
+.nextCaption{font-size:10px;font-weight:900;letter-spacing:1.7px;color:#fff0aa}
+#nextName{font-size:25px;font-weight:1000;color:var(--gold);line-height:1;margin-top:2px}
+.nextRight{border-left:1px solid #dcae2b;padding-left:10px;text-align:right}
+#nextTime{font-size:27px;font-weight:1000;color:var(--gold);line-height:1}
+#countdown{font-size:11px;font-weight:900;margin-top:5px}
+
+.times{display:grid;grid-template-columns:repeat(6,1fr);gap:5px}
+.p{
+  background:#082137;border:1.3px solid #0d5d91;border-radius:11px;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
+}
+.p .n{font-size:10px;font-weight:900;color:#c8deef}
+.p .t{font-size:19px;font-weight:1000;margin-top:4px}
+.p.next{
+  background:linear-gradient(180deg,#513f05,#332904);
+  border:2px solid var(--gold);
+  box-shadow:0 0 10px rgba(255,212,71,.2)
+}
+.p.next .n,.p.next .t{color:var(--gold)}
+
+.bottom{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.tile{
+  display:grid;grid-template-columns:.38fr 1fr;align-items:center;padding:8px 10px;text-decoration:none;color:var(--text);
+}
+.icon{font-size:30px;text-align:center;font-weight:900}
+.icon.green{color:var(--green)}
+.tileText{min-width:0}
+.k{font-size:10px;font-weight:900;color:#d5e8f6}
+.v{font-size:21px;font-weight:1000;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s{font-size:9px;font-weight:700;color:var(--muted);margin-top:3px}
+.ok{color:var(--green)}
+button.tile{font:inherit;text-align:left;cursor:pointer}
+
+footer{text-align:center;font-size:7px;opacity:.35;padding-top:1px}
+
+@media(orientation:portrait){
+ body{overflow:auto}
+ main{height:auto;min-height:100vh;grid-template-rows:auto auto auto auto}
+ .top{grid-template-columns:1fr}
+ .clockPanel{min-height:150px}
+ .weatherPanel{min-height:110px}
+ .prayerHead{grid-template-columns:1fr}
+ .titleBox{min-height:65px}
+ .nextBox{min-height:95px}
+ .times{grid-template-columns:repeat(3,1fr)}
+ .p{min-height:72px}
+ .bottom{grid-template-columns:1fr 1fr}
+ .tile{min-height:95px}
+}
+</style>
+</head>
+<body>
+<main>
+
+<section class="top">
+  <div class="panel clockPanel">
+    <div class="timeWrap">
+      <div id="clock">--:--</div><div id="ampm">--</div>
+    </div>
+    <div class="dateWrap">
+      <div id="day">THURSDAY</div>
+      <div id="date">10 SEP 2026</div>
+      <div id="hijri">DOHA</div>
+    </div>
+  </div>
+
+  <div class="panel weatherPanel">
+    <div class="sun">☀</div>
+    <div class="weatherMid">
+      <div class="city">Doha</div>
+      <div id="weather">—°C</div>
+      <div id="condition">Loading…</div>
+    </div>
+    <div id="range">H: —°<br>L: —°</div>
+  </div>
+</section>
+
+<section class="panel prayerPanel">
+  <div class="prayerHead">
+    <div class="titleBox">🕌&nbsp;&nbsp;DOHA PRAYER TIMES</div>
+    <div class="nextBox">
+      <div class="nextLeft">
+        <div class="nextCaption">NEXT PRAYER</div>
+        <div id="nextName">LOADING</div>
+      </div>
+      <div class="nextRight">
+        <div id="nextTime">--:--</div>
+        <div id="countdown">Please wait</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="times">
+    <div class="p" data-name="Fajr"><div class="n">FAJR</div><div class="t">--:--</div></div>
+    <div class="p" data-name="Sunrise"><div class="n">SUNRISE</div><div class="t">--:--</div></div>
+    <div class="p" data-name="Dhuhr"><div class="n">DHUHR</div><div class="t">--:--</div></div>
+    <div class="p" data-name="Asr"><div class="n">ASR</div><div class="t">--:--</div></div>
+    <div class="p" data-name="Maghrib"><div class="n">MAGHRIB</div><div class="t">--:--</div></div>
+    <div class="p" data-name="Isha"><div class="n">ISHA</div><div class="t">--:--</div></div>
+  </div>
+</section>
+
+<section class="bottom">
+  <div class="tile">
+    <div class="icon green">●</div>
+    <div class="tileText"><div class="k">INTERNET</div><div id="net" class="v">Checking</div><div class="s">Connected</div></div>
+  </div>
+
+  <div class="tile">
+    <div class="icon green">↔</div>
+    <div class="tileText"><div class="k">QAR → INR</div><div id="fx" class="v">₹ —</div><div class="s">1 QAR • reference</div></div>
+  </div>
+
+  <a class="tile" href="http://192.168.0.1">
+    <div class="icon green">⌁</div>
+    <div class="tileText"><div class="k">NETWORK</div><div class="v">AX55</div><div class="s">Open Router</div></div>
+  </a>
+
+  <button class="tile" onclick="tools()">
+    <div class="icon">▦</div>
+    <div class="tileText"><div class="k">UTILITIES</div><div class="v">TOOLS</div><div class="s">Calculator • FX • Timer</div></div>
+  </button>
+</section>
+
+<footer>SHAKIR HOME HUB • DOHA</footer>
+</main>
+
+<script>
+var prayerData={},fxRate=null,timerHandle=null;
+
+function pad(n){return n<10?"0"+n:n}
+function dohaNow(){return new Date(new Date().getTime()+3*3600000)}
+
+function tick(){
+ var d=dohaNow(),h=d.getUTCHours(),m=d.getUTCMinutes(),ap=h>=12?"PM":"AM",h12=h%12||12;
+ document.getElementById("clock").textContent=h12+":"+pad(m);
+ document.getElementById("ampm").textContent=ap;
+
+ var days=["SUNDAY","MONDAY","TUESDAY","WEDNESDAY","THURSDAY","FRIDAY","SATURDAY"];
+ var mons=["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+ document.getElementById("day").textContent=days[d.getUTCDay()];
+ document.getElementById("date").textContent=pad(d.getUTCDate())+" "+mons[d.getUTCMonth()]+" "+d.getUTCFullYear();
+
+ updateNext();
+}
+
+function network(){
+ var e=document.getElementById("net");
+ if(navigator.onLine){e.textContent="ONLINE";e.className="v ok"}
+ else{e.textContent="OFFLINE";e.className="v"}
+}
+
+function xhr(url,ok,bad){
+ var x=new XMLHttpRequest();x.open("GET",url,true);x.timeout=12000;
+ x.onreadystatechange=function(){
+  if(x.readyState===4){
+   if(x.status>=200&&x.status<300){try{ok(JSON.parse(x.responseText))}catch(e){bad()}}
+   else bad();
+  }
+ };
+ x.onerror=bad;x.ontimeout=bad;x.send();
+}
+
+function clean(v){return(v||"").split(" ")[0].substring(0,5)}
+
+function loadPrayer(){
+ var d=dohaNow(),ds=pad(d.getUTCDate())+"-"+pad(d.getUTCMonth()+1)+"-"+d.getUTCFullYear();
+ xhr("https://api.aladhan.com/v1/timingsByCity/"+ds+"?city=Doha&country=Qatar&method=10",function(j){
+   var t=j.data.timings,n=["Fajr","Sunrise","Dhuhr","Asr","Maghrib","Isha"];
+   for(var i=0;i<n.length;i++)prayerData[n[i]]=clean(t[n[i]]);
+   var els=document.querySelectorAll(".p");
+   for(var k=0;k<els.length;k++){
+     var z=els[k].getAttribute("data-name");
+     els[k].querySelector(".t").textContent=prayerData[z];
+   }
+   if(j.data && j.data.date && j.data.date.hijri){
+     var h=j.data.date.hijri;
+     document.getElementById("hijri").textContent=h.day+" "+h.month.en+" "+h.year+" AH";
+   }
+   updateNext();
+ },function(){document.getElementById("nextName").textContent="UNAVAILABLE"});
+}
+
+function updateNext(){
+ if(!prayerData.Fajr)return;
+ var d=dohaNow(),now=d.getUTCHours()*60+d.getUTCMinutes();
+ var order=["Fajr","Dhuhr","Asr","Maghrib","Isha"],name="Fajr",diff=null;
+
+ for(var i=0;i<order.length;i++){
+   var a=prayerData[order[i]].split(":"),mins=(+a[0]*60)+(+a[1]);
+   if(mins>now){name=order[i];diff=mins-now;break}
+ }
+ if(diff===null){
+   var f=prayerData.Fajr.split(":");
+   diff=1440-now+(+f[0]*60)+(+f[1]);
+   name="Fajr";
+ }
+ document.getElementById("nextName").textContent=name.toUpperCase();
+ document.getElementById("nextTime").textContent=prayerData[name];
+
+ var h=Math.floor(diff/60),m=diff%60;
+ document.getElementById("countdown").textContent=(h?h+"h ":"")+m+"m remaining";
+
+ var e=document.querySelectorAll(".p");
+ for(var k=0;k<e.length;k++){
+   e[k].className="p"+(e[k].getAttribute("data-name")===name?" next":"");
+ }
+}
+
+function loadFX(){
+ xhr("https://api.frankfurter.dev/v2/rate/QAR/INR",function(j){
+  var r=j.rate||(j.rates&&j.rates.INR);
+  fxRate=parseFloat(r);
+  if(!isNaN(fxRate))document.getElementById("fx").textContent="₹ "+fxRate.toFixed(2);
+ },function(){});
+}
+
+function wt(c){
+ if(c===0)return"Clear";
+ if(c<=3)return"Partly cloudy";
+ if(c<=48)return"Fog";
+ if(c<=67)return"Rain";
+ if(c<=82)return"Showers";
+ if(c<=99)return"Thunderstorm";
+ return"Weather";
+}
+
+function loadWeather(){
+ xhr("https://api.open-meteo.com/v1/forecast?latitude=25.2854&longitude=51.5310&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=Asia%2FQatar&forecast_days=1",function(j){
+   document.getElementById("weather").textContent=Math.round(j.current.temperature_2m)+"°C";
+   document.getElementById("condition").textContent=wt(j.current.weather_code);
+   document.getElementById("range").innerHTML="H: "+Math.round(j.daily.temperature_2m_max[0])+"°<br>L: "+Math.round(j.daily.temperature_2m_min[0])+"°";
+ },function(){document.getElementById("condition").textContent="Unavailable"});
+}
+
+function tools(){
+ var c=prompt("TOOLS\n1 = Calculator\n2 = QAR→INR\n3 = Timer\n\nEnter 1, 2 or 3:");
+ if(c==="1"){
+   var x=prompt("Calculation:");
+   if(x!==null){
+     try{
+       if(!/^[0-9+\-*/(). %]+$/.test(x))throw 0;
+       alert("Result: "+Function('"use strict";return ('+x+')')());
+     }catch(e){alert("Invalid calculation")}
+   }
+ }else if(c==="2"){
+   var q=parseFloat(prompt("QAR amount:"));
+   if(!isNaN(q)&&fxRate)alert(q.toFixed(2)+" QAR = ₹ "+(q*fxRate).toFixed(2));
+   else alert("Rate unavailable");
+ }else if(c==="3"){
+   var m=parseInt(prompt("Timer minutes:"),10);
+   if(m>0){
+     if(timerHandle)clearTimeout(timerHandle);
+     timerHandle=setTimeout(function(){alert("Timer finished.")},m*60000);
+     alert("Timer started for "+m+" minutes.");
+   }
+ }
+}
+
+function refresh(){loadPrayer();loadFX();loadWeather()}
+
+tick();network();refresh();
+setInterval(tick,1000);
+setInterval(refresh,30*60*1000);
+window.addEventListener("online",network);
+window.addEventListener("offline",network);
+</script>
+</body>
+</html>
