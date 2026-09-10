@@ -108,6 +108,17 @@ footer{text-align:center;font-size:7px;opacity:.35;padding-top:1px}
  .bottom{grid-template-columns:1fr 1fr}
  .tile{min-height:95px}
 }
+
+.athanOverlay{position:fixed;inset:0;background:#03101b;z-index:9999;display:none;align-items:center;justify-content:center;text-align:center;padding:18px}
+.athanOverlay.show{display:flex}
+.athanCard{width:92%;max-width:520px;background:linear-gradient(180deg,#4b3d08,#241d04);border:2px solid #ffd447;border-radius:18px;padding:18px;box-shadow:0 0 24px rgba(255,212,71,.22)}
+.athanSmall{font-size:11px;font-weight:900;letter-spacing:2px;color:#fff0aa}
+#athanPrayer{font-size:34px;font-weight:1000;color:#ffd447;margin-top:6px}
+.athanTitle{font-size:16px;font-weight:900;margin-top:5px}
+.athanBtns{display:flex;gap:8px;justify-content:center;margin-top:14px}
+.athanBtn{border:1px solid #ffd447;background:#0a2238;color:#fff;border-radius:10px;padding:9px 14px;font-weight:900;font-size:12px}
+.athanBtn.stop{background:#5a1f16}
+
 </style>
 </head>
 <body>
@@ -295,7 +306,7 @@ function loadWeather(){
 }
 
 function tools(){
- var c=prompt("TOOLS\n1 = Calculator\n2 = QAR→INR\n3 = Timer\n\nEnter 1, 2 or 3:");
+ var c=prompt("TOOLS\n1 = Calculator\n2 = QAR→INR\n3 = Timer\n4 = Enable Athan\n5 = Disable Athan\n\nEnter 1 to 5:");
  if(c==="1"){
    var x=prompt("Calculation:");
    if(x!==null){
@@ -315,16 +326,102 @@ function tools(){
      timerHandle=setTimeout(function(){alert("Timer finished.")},m*60000);
      alert("Timer started for "+m+" minutes.");
    }
+ }else if(c==="4"){
+   enableAthan();
+ }else if(c==="5"){
+   disableAthan();
  }
+}
+
+var athanEnabled=false,lastAthanKey="",athanAudio=null,fajrAudio=null;
+
+function initAthan(){
+  athanAudio=document.getElementById("athanAudio");
+  fajrAudio=document.getElementById("fajrAudio");
+  try{athanEnabled=localStorage.getItem("athanEnabled")==="1"}catch(e){}
+}
+function primeAudio(){
+  if(!athanAudio)return;
+  var a=athanAudio,oldVol=a.volume;
+  a.volume=0;
+  try{
+    var p=a.play();
+    if(p&&p.then){
+      p.then(function(){a.pause();a.currentTime=0;a.volume=oldVol;})
+       .catch(function(){a.volume=oldVol;});
+    }else{
+      a.pause();a.currentTime=0;a.volume=oldVol;
+    }
+  }catch(e){a.volume=oldVol}
+  alert("Athan alerts enabled. Keep Home Hub open, Auto-Lock set to Never, and media volume turned up.");
+}
+function enableAthan(){
+  athanEnabled=true;
+  try{localStorage.setItem("athanEnabled","1")}catch(e){}
+  primeAudio();
+}
+function disableAthan(){
+  athanEnabled=false;
+  try{localStorage.setItem("athanEnabled","0")}catch(e){}
+  stopAthan();
+  alert("Athan alerts disabled.");
+}
+function playAthan(name){
+  if(!athanEnabled)return;
+  document.getElementById("athanPrayer").textContent=name.toUpperCase();
+  document.getElementById("athanOverlay").className="athanOverlay show";
+  var audio=(name==="Fajr" && fajrAudio && fajrAudio.getAttribute("src"))?fajrAudio:athanAudio;
+  try{audio.currentTime=0}catch(e){}
+  try{
+    var p=audio.play();
+    if(p&&p.catch){p.catch(function(){alert("Athan could not start automatically. Open TOOLS and choose Enable Athan once, then keep this page open.");});}
+  }catch(e){}
+  audio.onended=function(){dismissAthan();}
+}
+function stopAthan(){
+  try{if(athanAudio){athanAudio.pause();athanAudio.currentTime=0}}catch(e){}
+  try{if(fajrAudio){fajrAudio.pause();fajrAudio.currentTime=0}}catch(e){}
+  dismissAthan();
+}
+function dismissAthan(){
+  document.getElementById("athanOverlay").className="athanOverlay";
+}
+function athanCheck(){
+  if(!athanEnabled||!prayerData.Fajr)return;
+  var d=dohaNow(),now=pad(d.getUTCHours())+":"+pad(d.getUTCMinutes());
+  var order=["Fajr","Dhuhr","Asr","Maghrib","Isha"];
+  for(var i=0;i<order.length;i++){
+    var n=order[i];
+    if(prayerData[n]===now){
+      var key=d.getUTCFullYear()+"-"+pad(d.getUTCMonth()+1)+"-"+pad(d.getUTCDate())+"-"+n;
+      if(lastAthanKey!==key){lastAthanKey=key;playAthan(n);}
+      break;
+    }
+  }
 }
 
 function refresh(){loadPrayer();loadFX();loadWeather()}
 
-tick();network();refresh();
-setInterval(tick,1000);
+initAthan();tick();network();refresh();
+setInterval(function(){tick();athanCheck();},1000);
 setInterval(refresh,30*60*1000);
 window.addEventListener("online",network);
 window.addEventListener("offline",network);
 </script>
+
+<div id="athanOverlay" class="athanOverlay">
+  <div class="athanCard">
+    <div class="athanSmall">PRAYER TIME</div>
+    <div id="athanPrayer">MAGHRIB</div>
+    <div class="athanTitle">ATHAN IS PLAYING</div>
+    <div class="athanBtns">
+      <button class="athanBtn stop" onclick="stopAthan()">STOP ATHAN</button>
+      <button class="athanBtn" onclick="dismissAthan()">DISMISS</button>
+    </div>
+  </div>
+</div>
+<audio id="athanAudio" preload="auto" src="https://github.com/Kiwifu/adhan-mp3/raw/refs/heads/main/Mishary_Rashid_Alafasy_1_-_Kuwait_%28%D9%85%D8%B4%D8%A7%D8%B1%D9%8A_%D8%B1%D8%A7%D8%B4%D8%AF_%D8%A7%D9%84%D8%B9%D9%81%D8%A7%D8%B3%D9%8A_-_%D8%A7%D9%84%D9%83%D9%88%D9%8A%D8%AA%29.mp3"></audio>
+<audio id="fajrAudio" preload="auto" src="https://github.com/Kiwifu/adhan-mp3/raw/refs/heads/main/Adhan_Fajr_Al_Haram_Al_Maki_%28%D8%A3%D8%B0%D8%A7%D9%86_%D8%A7%D9%84%D9%81%D8%AC%D8%B1_%D8%A7%D9%84%D8%AD%D8%B1%D9%85_%D8%A7%D9%84%D9%85%D9%83%D9%8A%29.mp3"></audio>
+
 </body>
 </html>
