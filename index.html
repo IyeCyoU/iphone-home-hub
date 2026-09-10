@@ -358,6 +358,8 @@ function primeAudio(){
   alert("Athan alerts enabled. Keep Home Hub open, Auto-Lock set to Never, and media volume turned up.");
 }
 function enableAthan(){
+  if(!athanAudio)athanAudio=document.getElementById("athanAudio");
+  if(!fajrAudio)fajrAudio=document.getElementById("fajrAudio");
   athanEnabled=true;
   try{localStorage.setItem("athanEnabled","1")}catch(e){}
   primeAudio();
@@ -389,6 +391,8 @@ function dismissAthan(){
   document.getElementById("athanOverlay").className="athanOverlay";
 }
 function testAthan(){
+  if(!athanAudio)athanAudio=document.getElementById("athanAudio");
+  if(!fajrAudio)fajrAudio=document.getElementById("fajrAudio");
   if(!athanEnabled){
     athanEnabled=true;
     try{localStorage.setItem("athanEnabled","1")}catch(e){}
@@ -429,9 +433,10 @@ function athanCheck(){
 
 function refresh(){loadPrayer();loadFX();loadWeather()}
 
-initAthan();tick();network();refresh();
+tick();network();refresh();
 setInterval(function(){tick();athanCheck();},1000);
 setInterval(refresh,30*60*1000);
+window.addEventListener("load",function(){initAthan();});
 window.addEventListener("online",network);
 window.addEventListener("offline",network);
 </script>
