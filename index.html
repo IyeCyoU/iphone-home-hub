@@ -306,7 +306,7 @@ function loadWeather(){
 }
 
 function tools(){
- var c=prompt("TOOLS\n1 = Calculator\n2 = QAR→INR\n3 = Timer\n4 = Enable Athan\n5 = Disable Athan\n6 = Test Athan Now\n\nEnter 1 to 6:");
+ var c=prompt("TOOLS\n1 = Calculator\n2 = QAR→INR\n3 = Timer\n4 = Enable Athan\n5 = Disable Athan\n6 = Test Regular Athan\n7 = Test Fajr Athan\n\nEnter 1 to 7:");
  if(c==="1"){
    var x=prompt("Calculation:");
    if(x!==null){
@@ -331,7 +331,9 @@ function tools(){
  }else if(c==="5"){
    disableAthan();
  }else if(c==="6"){
-   testAthan();
+   testAthan("regular");
+ }else if(c==="7"){
+   testAthan("fajr");
  }
 }
 
@@ -380,41 +382,54 @@ function playAthan(name){
     var p=audio.play();
     if(p&&p.catch){p.catch(function(){alert("Athan could not start automatically. Open TOOLS and choose Enable Athan once, then keep this page open.");});}
   }catch(e){}
-  audio.onended=function(){dismissAthan();}
+  audio.onended=function(){hideAthanOverlay();}
 }
-function stopAthan(){
+function stopAllAthanAudio(){
   try{if(athanAudio){athanAudio.pause();athanAudio.currentTime=0}}catch(e){}
   try{if(fajrAudio){fajrAudio.pause();fajrAudio.currentTime=0}}catch(e){}
-  dismissAthan();
 }
-function dismissAthan(){
+function hideAthanOverlay(){
   document.getElementById("athanOverlay").className="athanOverlay";
 }
-function testAthan(){
+function stopAthan(){
+  stopAllAthanAudio();
+  hideAthanOverlay();
+}
+function dismissAthan(){
+  stopAllAthanAudio();
+  hideAthanOverlay();
+}
+function testAthan(which){
   if(!athanAudio)athanAudio=document.getElementById("athanAudio");
   if(!fajrAudio)fajrAudio=document.getElementById("fajrAudio");
   if(!athanEnabled){
     athanEnabled=true;
     try{localStorage.setItem("athanEnabled","1")}catch(e){}
   }
-  document.getElementById("athanPrayer").textContent="TEST ATHAN";
+  var useFajr=(which==="fajr");
+  var audio=useFajr?fajrAudio:athanAudio;
+  document.getElementById("athanPrayer").textContent=useFajr?"TEST FAJR ATHAN":"TEST REGULAR ATHAN";
   document.getElementById("athanOverlay").className="athanOverlay show";
-  var audio=athanAudio;
-  if(!audio){alert("Athan audio is not ready.");return;}
+  if(!audio){
+    alert("Athan audio is not ready.");
+    hideAthanOverlay();
+    return;
+  }
+  stopAllAthanAudio();
   try{audio.currentTime=0}catch(e){}
   try{
     var p=audio.play();
     if(p&&p.catch){
       p.catch(function(){
-        alert("Safari blocked playback. First choose TOOLS > Enable Athan, then tap TEST ATHAN NOW again.");
-        dismissAthan();
+        alert("Safari blocked playback. First choose TOOLS > Enable Athan, then run the test again.");
+        hideAthanOverlay();
       });
     }
   }catch(e){
-    alert("Unable to start test Athan.");
-    dismissAthan();
+    alert("Unable to start Athan test.");
+    hideAthanOverlay();
   }
-  audio.onended=function(){dismissAthan();}
+  audio.onended=function(){hideAthanOverlay();}
 }
 
 function athanCheck(){
@@ -452,8 +467,8 @@ window.addEventListener("offline",network);
     </div>
   </div>
 </div>
-<audio id="athanAudio" preload="auto" src="https://github.com/Kiwifu/adhan-mp3/raw/refs/heads/main/Mishary_Rashid_Alafasy_1_-_Kuwait_%28%D9%85%D8%B4%D8%A7%D8%B1%D9%8A_%D8%B1%D8%A7%D8%B4%D8%AF_%D8%A7%D9%84%D8%B9%D9%81%D8%A7%D8%B3%D9%8A_-_%D8%A7%D9%84%D9%83%D9%88%D9%8A%D8%AA%29.mp3"></audio>
-<audio id="fajrAudio" preload="auto" src="https://github.com/Kiwifu/adhan-mp3/raw/refs/heads/main/Adhan_Fajr_Al_Haram_Al_Maki_%28%D8%A3%D8%B0%D8%A7%D9%86_%D8%A7%D9%84%D9%81%D8%AC%D8%B1_%D8%A7%D9%84%D8%AD%D8%B1%D9%85_%D8%A7%D9%84%D9%85%D9%83%D9%8A%29.mp3"></audio>
+<audio id="athanAudio" preload="auto" src="athan_regular.mp3"></audio>
+<audio id="fajrAudio" preload="auto" src="athan_fajr.mp3"></audio>
 
 </body>
 </html>
