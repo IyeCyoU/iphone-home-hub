@@ -1,18 +1,29 @@
-SHAKIR HOME HUB v9 — ATHAN INITIALIZATION FIX
+SHAKIR HOME HUB — GITHUB AUDIO FINALIZATION
 
-Fix:
-The previous test could say "Athan audio is not ready" because the JavaScript initialized
-the audio player before the HTML audio elements had finished loading.
+This version is configured for your existing GitHub repository:
+IyeCyoU / iphone-home-hub
 
-v9 initializes the audio after the page is fully loaded and also re-checks the player
-when Enable Athan or Test Athan is selected.
+Required files in the SAME repository root:
+- index.html
+- athan_regular.mp3
+- athan_fajr.mp3
 
-TEST
-1. Replace the current GitHub index.html with this one.
-2. Commit and wait briefly for GitHub Pages to update.
-3. Refresh Home Hub on the iPhone 5s.
-4. Turn media volume up.
-5. TOOLS > 4 = Enable Athan.
-6. TOOLS > 6 = Test Athan Now.
+Audio setup:
+- Fajr uses athan_fajr.mp3
+- Dhuhr, Asr, Maghrib and Isha use athan_regular.mp3
+- Sunrise does not play Athan
 
-If Safari blocks the first autoplay attempt, tap Enable Athan once and then Test Athan again.
+Fixes:
+- DISMISS now immediately stops and resets the Athan.
+- STOP ATHAN also immediately stops and resets it.
+- TOOLS > 6 tests the regular Athan.
+- TOOLS > 7 tests the Fajr Athan.
+- Audio files use same-site relative URLs for better reliability on the Home Hub.
+
+Direct raw GitHub links:
+https://raw.githubusercontent.com/IyeCyoU/iphone-home-hub/main/athan_regular.mp3
+https://raw.githubusercontent.com/IyeCyoU/iphone-home-hub/main/athan_fajr.mp3
+
+Next:
+Replace only your existing GitHub index.html with this v10 index.html.
+Do NOT remove or re-upload the two MP3 files.
